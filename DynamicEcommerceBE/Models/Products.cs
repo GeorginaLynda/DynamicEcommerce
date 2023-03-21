@@ -13,7 +13,7 @@ namespace DynamicEcommerce.Models
 		public int ProductID { get; set; }
 		public int ProductCategoriesID { get; set; }
 		public decimal? UnitPrice { get; set; }
-		public string? Field1 { get; set; }
+		public string? Image { get; set; }
 		public string? Field2 { get; set; }
 		public string? Field3 { get; set; }
 		public int? Field4 { get; set; }

@@ -2,6 +2,8 @@
 using DynamicEcommerce.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
+using System.Text;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -95,8 +97,8 @@ namespace DynamicEcommerce.Controllers
             return result;
         }
 
-        // POST api/Users
-        [Authorize(Roles = "1")]
+        // POST api/Products
+        //[Authorize(Roles = "1")]
         [HttpPost]
         public async Task<ActionResult<Products>> AddProduct(Products product)
         {
@@ -109,6 +111,17 @@ namespace DynamicEcommerce.Controllers
                 }
                 else
                 {
+
+                    if (product.Image != null)
+                    {
+                        ASCIIEncoding ascii = new ASCIIEncoding();
+                        Byte[] bytes = ascii.GetBytes(product.Image);
+                        String decoded = ascii.GetString(bytes);
+
+                        product.Image = decoded;
+                    }
+
+
                     if (_dynamicEcommerceRepo.AddProduct(product))
                     {
                         result = Ok();
@@ -128,6 +141,7 @@ namespace DynamicEcommerce.Controllers
             return result;
         }
 
+
         // PUT api/Products/id
         [Authorize(Roles = "1")]
         [HttpPut("{id}")]
@@ -143,7 +157,7 @@ namespace DynamicEcommerce.Controllers
                 }
 
                 product.UnitPrice = putProduct.UnitPrice;
-                product.Field1 = putProduct.Field1;
+                product.Image = putProduct.Image;
                 product.Field2 = putProduct.Field2;
                 product.Field3 = putProduct.Field3;
                 product.Field4 = putProduct.Field4;

@@ -59,7 +59,7 @@ namespace DynamicEcommerce.Controllers
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);
 
-                return Ok(new { token = tokenHandler.WriteToken(token), roleId = userRole.RoleID });
+                return Ok(new { token = tokenHandler.WriteToken(token), username = storedUser.Username, userId = storedUser.UserID, roleId = userRole.RoleID  });
             }
             else
             {
