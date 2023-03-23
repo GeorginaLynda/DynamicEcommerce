@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
+using Microsoft.AspNetCore.Http.Features;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -55,6 +56,13 @@ builder.Services.AddControllers().AddNewtonsoftJson(jsonOptions =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDynamicEcommerceRepo, DynamicRepository>();
+//SERVE PER IL CARICAMENTO DELL'IMAGINE?
+builder.Services.Configure<FormOptions>(options =>
+{ 
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartBodyLengthLimit = int.MaxValue;
+    options.MemoryBufferThreshold = int.MaxValue;
+});
 
 //ATTIVA CORS
 builder.Services.AddCors(options =>
@@ -118,6 +126,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(myAllowSpecificOrigins);
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

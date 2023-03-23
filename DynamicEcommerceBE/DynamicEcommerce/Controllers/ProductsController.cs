@@ -2,8 +2,13 @@
 using DynamicEcommerce.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.SqlServer.Server;
 using System.Drawing;
+using System.Net.Http.Headers;
+using System.Security.Authentication;
 using System.Text;
+using Microsoft.AspNetCore.Http;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -29,6 +34,7 @@ namespace DynamicEcommerce.Controllers
             {
                 products = _dynamicEcommerceRepo.GetProducts();
                 result = Ok(products);
+
 
             }
             catch (Exception ex)
@@ -97,53 +103,63 @@ namespace DynamicEcommerce.Controllers
             return result;
         }
 
-        // POST api/Products
-        //[Authorize(Roles = "1")]
-        [HttpPost]
-        public async Task<ActionResult<Products>> AddProduct(Products product)
+        /* [Authorize(Roles = "1")]*/
+        [HttpPost, DisableRequestSizeLimit]
+        public async Task<ActionResult<Products>> AddProduct([FromForm] IFormCollection formData)
         {
             ActionResult result = null;
+
             try
             {
-                if (product == null)
+                if (formData == null)
                 {
                     result = BadRequest();
                 }
                 else
                 {
+                    var product = new Products();
 
-                    if (product.Image != null)
+                    // Recupera i dati dell'immagine dal FormData
+                    var image = formData.Files[0];
+
+                    if (image.Length > 0)
                     {
-                        ASCIIEncoding ascii = new ASCIIEncoding();
-                        Byte[] bytes = ascii.GetBytes(product.Image);
-                        String decoded = ascii.GetString(bytes);
+                        using (var ms = new MemoryStream())
+                        {
+                            image.CopyTo(ms);
+                            var fileBytes = ms.ToArray();
+                            var base64String = Convert.ToBase64String(fileBytes);
+                            product.Image = base64String;
+                        }
 
-                        product.Image = decoded;
-                    }
-
-
-                    if (_dynamicEcommerceRepo.AddProduct(product))
-                    {
-                        result = Ok();
-                    }
-                    else
-                    {
-                        result = StatusCode(StatusCodes.Status500InternalServerError);
+                        if (_dynamicEcommerceRepo.AddProduct(product))
+                        {
+                            result = Ok();
+                        }
+                        else
+                        {
+                            result = StatusCode(StatusCodes.Status500InternalServerError);
+                        }
                     }
                 }
             }
+
+
+
             catch (Exception ex)
             {
                 result = StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Error creating new Product record {ex.Message}");
+                     $"Error creating new Product record. {ex.Message}. Inner Exception: {ex.InnerException?.Message}");
+
             }
 
             return result;
         }
+    
 
 
-        // PUT api/Products/id
-        [Authorize(Roles = "1")]
+    // PUT api/Products/id
+    [Authorize(Roles = "1")]
         [HttpPut("{id}")]
         public async Task<ActionResult<Products>> PutProduct(int id, Products putProduct)
         {
@@ -156,12 +172,14 @@ namespace DynamicEcommerce.Controllers
                     return NotFound();
                 }
 
+                product.ProductCategoriesID = putProduct.ProductCategoriesID;
                 product.UnitPrice = putProduct.UnitPrice;
                 product.Image = putProduct.Image;
+                product.Field1 = putProduct.Field1;
                 product.Field2 = putProduct.Field2;
                 product.Field3 = putProduct.Field3;
                 product.Field4 = putProduct.Field4;
-                product.Field5 = putProduct.Field5;
+               
                 
 
                 var success = await _dynamicEcommerceRepo.PutProduct(product);
@@ -214,5 +232,7 @@ namespace DynamicEcommerce.Controllers
 
             return result;
         }
+
+        
     }
 }

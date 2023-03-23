@@ -1,5 +1,6 @@
 ﻿using DynamicEcommerce.Interfaces;
 using DynamicEcommerce.Models;
+using DynamicEcommerce.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicEcommerce.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
@@ -99,7 +100,7 @@ namespace DynamicEcommerce.Controllers
         }
 
         // POST api/<OrdersController>
-        [Authorize]
+       // [Authorize]
         [HttpPost]
         public async Task<ActionResult<Orders>> AddOrder(Orders order)
         {
@@ -165,3 +166,5 @@ namespace DynamicEcommerce.Controllers
         }
     }
 }
+
+

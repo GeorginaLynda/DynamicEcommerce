@@ -66,6 +66,8 @@ namespace DynamicEcommerce.Controllers
             return result;
         }
 
+       
+
         // POST api/ProductCategoriesController
         [Authorize(Roles = "1")]
         [HttpPost]

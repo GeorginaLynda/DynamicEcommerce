@@ -31,6 +31,7 @@ namespace DynamicEcommerce.Interfaces
         //METODI CRUD PRODUCTCATEGORIES: aggiunta, elimina
         List<ProductCategories> GetCategories();
         ProductCategories GetCategorieById(int id);
+        ProductCategories GetIdByCategories(string categorie);
         bool AddCategorie(ProductCategories categorie);
        
         bool DeleteCategorie(int id); //TO DO: DELETE PRODUCTCATEGORIES
