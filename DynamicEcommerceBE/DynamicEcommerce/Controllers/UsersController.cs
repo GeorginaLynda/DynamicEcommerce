@@ -131,7 +131,7 @@ namespace DynamicEcommerce.Controllers
                 user.Password = putUser.Password;
                 user.Field3 = putUser.Field3;
                 user.Field4 = putUser.Field4;
-                user.Field5 = putUser.Field5;
+                user.Birthdate = putUser.Birthdate;
                 user.Field6 = putUser.Field6;
                 user.Field7 = putUser.Field7;
                 user.Field8 = putUser.Field8;

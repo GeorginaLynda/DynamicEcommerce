@@ -150,12 +150,7 @@ namespace DynamicEcommerce.Repository
             return categorie;
 
         }
-        //SERVE PER L'ADDPRODUCT CHE DEVE PRENDERE LA CATEGORIA
-        public ProductCategories GetIdByCategories(string categorie)
-        {
-            ProductCategories productCategoriesId = _dynamicEcommerceDb.ProductCategories.FirstOrDefault(u => u.Categorie == categorie); ;
-            return productCategoriesId;
-        }
+       
         bool IDynamicEcommerceRepo.DeleteCategorie(int Id)
         {
             bool result = false;

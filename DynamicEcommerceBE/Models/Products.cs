@@ -13,17 +13,17 @@ namespace DynamicEcommerce.Models
 		[Key]
 		public int ProductID { get; set; }
 		public int ProductCategoriesID { get; set; }
-		public decimal? UnitPrice { get; set; }
+		public decimal UnitPrice { get; set; }
 		public string? Image { get; set; } 
-		public string? Field1 { get; set; }
+		public string? Title { get; set; }
 		public string? Field2 { get; set; }
 		public int? Field3 { get; set; }
 		public int? Field4 { get; set; }
-        public Products()
+      /*  public Products()
         {
             ProductCategoriesID = 2; // impostare il valore predefinito di default
         }
-
+*/
         //FOREIGN KEY PRODUCTCATEGORIESID
         public ProductCategories ProductCategories { get; set; }
 

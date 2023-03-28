@@ -25,7 +25,7 @@ namespace DynamicEcommerce.Controllers
         }
 
         //GET: api/Products
-        [HttpGet]
+        [HttpGet, DisableRequestSizeLimit]
         public async Task<ActionResult<IEnumerable<Products>>> GetProducts()
         {
             IEnumerable<Products> products = new List<Products>();
@@ -33,18 +33,32 @@ namespace DynamicEcommerce.Controllers
             try
             {
                 products = _dynamicEcommerceRepo.GetProducts();
+
+                foreach (var product in products)
+                {
+                    if (!string.IsNullOrEmpty(product.Image))
+                    {
+                        byte[] imageBytes = Convert.FromBase64String(product.Image);
+                        string imageSrc = Convert.ToBase64String(imageBytes);
+                        product.Image = imageSrc;
+                    }
+                    if (product.UnitPrice.ToString().Length == 4)
+                    {
+                        product.UnitPrice = Convert.ToDecimal(product.UnitPrice);
+                    }
+                }
+                
                 result = Ok(products);
-
-
             }
             catch (Exception ex)
             {
                 result = StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Error while getting Products {ex.Message}");
+                    $"Error while getting Products {ex.Message} inner: {ex.InnerException}");
             }
 
             return result;
         }
+
 
         //GET:api/Products/id
         [HttpGet("{id}")]
@@ -62,6 +76,7 @@ namespace DynamicEcommerce.Controllers
                 }
                 else
                 {
+
                     result = Ok(product);
                 }
             }
@@ -103,21 +118,21 @@ namespace DynamicEcommerce.Controllers
             return result;
         }
 
-        /* [Authorize(Roles = "1")]*/
+        
         [HttpPost, DisableRequestSizeLimit]
-        public async Task<ActionResult<Products>> AddProduct([FromForm] IFormCollection formData)
+        public async Task<ActionResult<Products>> AddProduct([FromForm] Products product, IFormCollection formData)
         {
             ActionResult result = null;
 
             try
             {
-                if (formData == null)
+                if (product == null)
                 {
                     result = BadRequest();
                 }
                 else
                 {
-                    var product = new Products();
+                    
 
                     // Recupera i dati dell'immagine dal FormData
                     var image = formData.Files[0];
@@ -131,17 +146,26 @@ namespace DynamicEcommerce.Controllers
                             var base64String = Convert.ToBase64String(fileBytes);
                             product.Image = base64String;
                         }
+                       
+                        //int productCategoriesId = int.Parse(formData["productCategoriesId"]);
+                        //ProductCategories productCategory = _dynamicEcommerceRepo.GetCategorieById(productCategoriesId);
+                        //product.ProductCategoriesID = productCategoriesId;
 
-                        if (_dynamicEcommerceRepo.AddProduct(product))
+                        //decimal price = decimal.Parse(formData["unitPrice"]);
+                        //product.UnitPrice = price;
+                    }
+                    if (_dynamicEcommerceRepo.AddProduct(product))
                         {
                             result = Ok();
                         }
-                        else
-                        {
-                            result = StatusCode(StatusCodes.Status500InternalServerError);
-                        }
+                      
+                    
+                    else
+                    {
+                        result = StatusCode(StatusCodes.Status500InternalServerError);
                     }
                 }
+
             }
 
 
@@ -175,7 +199,7 @@ namespace DynamicEcommerce.Controllers
                 product.ProductCategoriesID = putProduct.ProductCategoriesID;
                 product.UnitPrice = putProduct.UnitPrice;
                 product.Image = putProduct.Image;
-                product.Field1 = putProduct.Field1;
+                product.Title = putProduct.Title;
                 product.Field2 = putProduct.Field2;
                 product.Field3 = putProduct.Field3;
                 product.Field4 = putProduct.Field4;

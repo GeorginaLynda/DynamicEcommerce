@@ -13,7 +13,7 @@ namespace DynamicEcommerce.Models
 		public string Password { get; set; }
 		public string? Field3 { get; set; }
 		public string? Field4 { get; set; }
-		public DateTime? Field5 { get; set; }
+		public DateTime? Birthdate { get; set; }
 		public int? Field6 { get; set; }
 		public int? Field7 { get; set; }
 		public int? Field8 { get; set; }

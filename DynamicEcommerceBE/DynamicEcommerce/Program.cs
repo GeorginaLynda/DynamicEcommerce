@@ -56,7 +56,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(jsonOptions =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDynamicEcommerceRepo, DynamicRepository>();
-//SERVE PER IL CARICAMENTO DELL'IMAGINE?
+//SERVE PER IL CARICAMENTO DELL'IMAGINE
 builder.Services.Configure<FormOptions>(options =>
 { 
     options.ValueLengthLimit = int.MaxValue;
